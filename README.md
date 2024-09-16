@@ -1,36 +1,165 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+/**
+ * RANGE 1: Company Distributions
 
-## Getting Started
+{
+  "range": "'Company Distributions'!A1:E1000",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Country",
+      "Company Logos Analysed",
+      "",
+      "Sector",
+      "Count"
+    ],
+    [
+      "Argentina",
+      "19",
+      "",
+      "Basic Materials",
+      "675"
+    ],
+    ...
+  ]
+}
+ */ 
 
-First, run the development server:
+/**
+ * RANGE 2: Totals - 17 Colours
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+{
+  "range": "'Totals - 17 Colours'!A1:C1000",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Color_CSS2.1",
+      "% Colour Use",
+      "% Logos Using Colour"
+    ],
+    [
+      "white",
+      "38.57%",
+      "72.24%"
+    ],
+    ...
+  ]
+}
+*/ 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+/**
+ * RANGE 3: Totals - 143 Colours
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+{
+  "range": "'Totals - 143 Colours'!A1:C1000",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Color_CSS3",
+      "% Colour Use",
+      "% Logos Using Colour"
+    ],
+    [
+      "white",
+      "37.77%",
+      "69.67%"
+    ],
+    ...
+  ]
+}
+ */ 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+/**
+ * RANGE 4: Sector - 17 Colours
 
-## Learn More
+{
+  "range": "'Sector- 17 Colours'!A1:D1000",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Sector",
+      "Color_CSS2.1",
+      "% Colour Use",
+      "% Logos Using Colour"
+    ],
+    [
+      "Basic Materials",
+      "white",
+      "37.78%",
+      "67.85%"
+    ],
+    ...
+  ]
+}
+ */
 
-To learn more about Next.js, take a look at the following resources:
+/**
+ * RANGE 5: Sector - 143 Colours
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+{
+  "range": "'Sector - 143 Colours'!A1:D1186",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Sector",
+      "Color_CSS3",
+      "% Colour Use",
+      "% Logos Using Colour"
+    ],
+    [
+      "Basic Materials",
+      "white",
+      "36.90%",
+      "65.04%"
+    ],
+    ...
+  ]
+}
+ */ 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+/**
+ * RANGE 6: Country - 17 Colours
 
-## Deploy on Vercel
+{
+  "range": "'Country - 17 Colours'!A1:D1000",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Country",
+      "Color_CSS2.1",
+      "% Colour Use",
+      "% Logos Using Colour"
+    ],
+    [
+      "Argentina",
+      "white",
+      "37.78%",
+      "67.85%"
+    ],
+    ...
+  ]
+}
+ */ 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+/**
+ * RANGE 7: Coutry - 143 Colours
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+{
+  "range": "'Coutry - 143 Colours'!A1:D1000",
+  "majorDimension": "ROWS",
+  "values": [
+    [
+      "Country",
+      "Color_CSS3",
+      "% Colour Use",
+      "% Logos Using Colour"
+    ],
+    [
+      "Argentina",
+      "white",
+      "36.90%",
+      "65.04%"
+    ],
+    ...
+  ]
+}
+ */ 
