@@ -2,12 +2,15 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import BynderLogo from '@/app/assets/BynderLogo';
 import ColorIcon from '@/app/assets/ColorIcon';
 import SectorIcon from '@/app/assets/SectorIcon';
-import { aeonikBold } from '@/app/layout';
+
+import { aeonikBold } from "@/app/fonts";
+
 import { SearchableSelect } from './SearchableSelect';
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_API_KEY as string;
