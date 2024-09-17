@@ -3,11 +3,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import BynderLogo from '@/app/assets/BynderLogo';
 import ColorIcon from '@/app/assets/ColorIcon';
 import SectorIcon from '@/app/assets/SectorIcon';
+import { aeonikBold } from '@/app/layout';
+import { SearchableSelect } from './SearchableSelect';
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_API_KEY as string;
 const SPREADSHEET_ID = '1rW7H_iBMvjnEZPDq-dcLcmmxF1SLQOQOBbYJ0G6HBCg';
@@ -87,12 +88,12 @@ const LogoColorTool: React.FC = () => {
     if (colorStats) {
       const sectorData = data.sectorColors
         .filter(item => item.color === selectedColor)
-        .sort((a, b) => parseFloat(b.colorUse) - parseFloat(a.colorUse))
+        .sort((a, b) => parseFloat(b.logosUsingColor) - parseFloat(a.logosUsingColor))
         .slice(0, 5);
       setResults({
         type: 'color',
         color: selectedColor,
-        colorUse: colorStats.colorUse,
+        logosUsingColor: colorStats.logosUsingColor,
         sectorData: sectorData
       });
     }
@@ -102,7 +103,7 @@ const LogoColorTool: React.FC = () => {
     if (!data || !selectedSector) return;
     const sectorData = data.sectorColors
       .filter(item => item.name === selectedSector)
-      .sort((a, b) => parseFloat(b.colorUse) - parseFloat(a.colorUse))
+      .sort((a, b) => parseFloat(b.logosUsingColor) - parseFloat(a.logosUsingColor))
       .slice(0, 5);
     setResults({ type: 'sector', name: selectedSector, data: sectorData });
   };
@@ -118,61 +119,57 @@ const LogoColorTool: React.FC = () => {
   if (!data) return null;
 
   return (
-    <div className="max-w-2xl mx-auto w-full p-8 bg-blue-600 rounded-3xl">
+    <div className="max-w-2xl mx-auto w-full p-8 bg-[#126DFE] rounded-3xl">
       <div className="flex items-start mb-6">
         <BynderLogo className="w-24" />
       </div>
-      <h1 className="text-4xl font-bold text-white mb-8 max-w-sm">How unique is the color of your logo?</h1>
+      <h1 className={`text-4xl font-bold text-white mb-8 max-w-sm ${aeonikBold.className}`}>How unique is the color of your logo?</h1>
       {!results ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card className="bg-white rounded-xl">
           <CardContent className="pt-6">
             <div className="flex items-center mb-4">
               <ColorIcon className="mr-2 w-8" />
-              <h2 className="text-xl font-semibold">Search by color</h2>
+              <h2 className={`text-xl font-semibold ${aeonikBold.className}`}>Search by color</h2>
             </div>
             <p className="text-sm text-gray-600 mb-4">Select a color to see how many logos it appears in.</p>
-            <Select onValueChange={handleColorSelect}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a color" />
-              </SelectTrigger>
-              <SelectContent>
-                {data.totalColors.map((color) => (
-                  <SelectItem key={color.color} value={color.color}>
-                    <div className="flex items-center">
-                      <div
-                        className="w-4 h-4 rounded-full mr-2"
-                        style={{ backgroundColor: color.color }}
-                      />
-                      {color.color}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={handleColorSubmit} className="mt-4 bg-blue-600 font-bold">See results</Button>
+            <SearchableSelect
+              options={data.totalColors.map((color) => ({
+                value: color.color,
+                label: (
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 rounded-sm mr-2 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)]"
+                      style={{ backgroundColor: color.color }}
+                    />
+                    {color.color}
+                  </div>
+                ),
+              }))}
+              placeholder="Select a color"
+              onValueChange={handleColorSelect}
+              searchTerm={selectedColor || ''}
+            />
+            <Button onClick={handleColorSubmit} className="mt-4 bg-[#126DFE] font-bold">See results</Button>
           </CardContent>
         </Card>
         <Card className="bg-white rounded-xl">
           <CardContent className="pt-6">
             <div className="flex items-center mb-4">
               <SectorIcon className="mr-2 w-8" />
-              <h2 className="text-xl font-semibold">Search by sector</h2>
+              <h2 className={`text-xl font-semibold ${aeonikBold.className}`}>Search by sector</h2>
             </div>
             <p className="text-sm text-gray-600 mb-4">Choose a sector to discover the most popular logo colors.</p>
-            <Select onValueChange={handleSectorSelect}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select sector" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from(new Set(data.sectorColors.map(item => item.name))).map((sector) => (
-                  <SelectItem key={sector} value={sector}>
-                    {sector}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={handleSectorSubmit} className="mt-4 bg-blue-600 font-bold">See results</Button>
+            <SearchableSelect
+              options={Array.from(new Set(data.sectorColors.map(item => item.name))).map((sector) => ({
+                value: sector,
+                label: sector,
+              }))}
+              placeholder="Select sector"
+              onValueChange={handleSectorSelect}
+              searchTerm={selectedSector || ''}
+            />
+            <Button onClick={handleSectorSubmit} className="mt-4 bg-[#126DFE] font-bold">See results</Button>
           </CardContent>
         </Card>
       </div>
@@ -181,20 +178,26 @@ const LogoColorTool: React.FC = () => {
           <CardContent className="pt-6">
             {results.type === 'color' ? (
               <>
-                <h2 className="text-xl font-semibold mb-4">
+                <div className="flex items-center mb-4 p-3 pb-0">
                   <span 
-                    className="inline-block w-4 h-4 rounded-full mr-2" 
+                    className="inline-block w-5 h-5 rounded mr-2" 
                     style={{backgroundColor: results.color}}
                   ></span>
-                  {results.color} is used in {results.colorUse} of all logos.
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">The data below shows how many logos in various sectors use this color:</p>
+                  <h2 className="text-xl">
+                    <span className="font-semibold">{results.color}</span> is used in <span className="font-semibold">{results.logosUsingColor}</span> of all logos.
+                  </h2>
+                </div>
+                <p className="text-sm text-gray-500 mb-6 px-3">The data below shows how many logos in various sectors use this color:</p>
                 <div className="space-y-2">
+                  <div className="flex justify-between items-center text-gray-500 px-3">
+                    <span className="flex-1">Color</span>
+                    <span className="w-1/5 px-2 py-1 rounded">Logos</span>
+                  </div>
                   {results.sectorData.map((item: SectorColorData, index: number) => (
-                    <div key={item.color} className={`flex justify-between items-center rounded-lg ${index === 0 ? 'bg-blue-500 text-white py-1.5 px-3 font-bold text-xl' : 'text-gray-700 py-0 px-3'}`}>
-                      <span>{item.name}</span>
-                      <span className={`px-2 py-1 rounded ${index === 0 ? 'bg-blue-500 text-white' : 'text-gray-700'}`}>
-                        {item.colorUse}
+                    <div key={item.color} className={`flex justify-between items-center rounded-lg ${index === 0 ? 'bg-[#126DFE] text-white py-1.5 px-3 font-bold text-xl' : 'text-gray-700 py-0 px-3'}`}>
+                      <span className="flex-1">{item.name}</span>
+                      <span className={`w-1/5 px-2 py-1 rounded ${index === 0 ? 'bg-[#126DFE] text-white' : 'text-gray-700'}`}>
+                        {item.logosUsingColor}
                       </span>
                     </div>
                   ))}
@@ -202,12 +205,16 @@ const LogoColorTool: React.FC = () => {
               </>
             ) : (
               <>
-                <h2 className="text-xl font-semibold mb-4">
-                  Below is a list of the most popular colors used within the {results.name} industry.
+                <h2 className="text-xl mb-4">
+                  Below is a list of the most popular colors used within the <span className="font-semibold">{results.name}</span> sector.
                 </h2>
                 <div className="space-y-2">
+                <div className="flex justify-between items-center text-gray-500 px-3">
+                    <span className="flex-1">Sector</span>
+                    <span className="w-1/5 px-2 py-1 rounded">Logos</span>
+                  </div>
                   {results.data.map((item: SectorColorData, index: number) => (
-                    <div key={item.color} className={`flex justify-between items-center rounded-lg ${index === 0 ? 'bg-blue-500 text-white py-1.5 px-3 font-bold text-xl' : 'text-gray-700 py-0 px-3'}`}>
+                    <div key={item.color} className={`flex justify-between items-center rounded-lg ${index === 0 ? 'bg-[#126DFE] text-white py-1.5 px-3 font-bold text-xl' : 'text-gray-700 py-0 px-3'}`}>
                       <span className="flex items-center">
                         <span 
                           className={`inline-block w-4 h-4 rounded-full mr-2 capitalize`}
@@ -216,7 +223,7 @@ const LogoColorTool: React.FC = () => {
                         {item.color}
                       </span>
                       <span className={`px-2 py-1 rounded`}>
-                        {item.colorUse}
+                        {item.logosUsingColor}
                       </span>
                     </div>
                   ))}
