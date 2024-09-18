@@ -186,7 +186,7 @@ const LogoColorTool: React.FC = () => {
                 <div className="flex items-center mb-4 p-3 pb-0">
                   <span 
                     className="inline-block w-5 h-5 rounded mr-2 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)]" 
-                    style={{backgroundColor: results.color.replace(' ', '').toLowerCase()}}
+                    style={{backgroundColor: results.color.replace(/ /g, '').toLowerCase()}}
                   ></span>
                   <h2 className="text-xl">
                     <span className="font-semibold">{results.color}</span> is used in <span className="font-semibold">{results.logosUsingColor}</span> of all logos.
