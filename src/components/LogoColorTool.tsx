@@ -16,11 +16,12 @@ import { SearchableSelect } from './SearchableSelect';
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_API_KEY as string;
 const SPREADSHEET_ID = '1rW7H_iBMvjnEZPDq-dcLcmmxF1SLQOQOBbYJ0G6HBCg';
 const RANGES = [
-  'Totals - 143 Colours!A:C',
-  'Sector - 143 Colours!A:D',
+  'Totals - 143 Colours!A:D',
+  'Sector - 143 Colours!A:E',
 ];
 
 interface ColorData {
+  colorName: string;
   color: string;
   colorUse: string;
   logosUsingColor: string;
@@ -28,6 +29,7 @@ interface ColorData {
 
 interface SectorColorData {
   name: string;
+  colorName: string;
   color: string;
   colorUse: string;
   logosUsingColor: string;
@@ -62,11 +64,11 @@ const LogoColorTool: React.FC = () => {
       const [totalColors, sectorColors] = responses.map(res => res.values.slice(1));
 
       setData({
-        totalColors: totalColors.map(([color, colorUse, logosUsingColor]: any) => ({
-          color, colorUse, logosUsingColor
+        totalColors: totalColors.map(([colorName, color, colorUse, logosUsingColor]: any) => ({
+          colorName, color, colorUse, logosUsingColor
         })),
-        sectorColors: sectorColors.map(([name, color, colorUse, logosUsingColor]: any) => ({
-          name, color, colorUse, logosUsingColor
+        sectorColors: sectorColors.map(([name, colorName, color, colorUse, logosUsingColor]: any) => ({
+          name, colorName,color, colorUse, logosUsingColor
         })),
       });
     } catch (error) {
@@ -87,10 +89,10 @@ const LogoColorTool: React.FC = () => {
 
   const handleColorSubmit = () => {
     if (!data || !selectedColor) return;
-    const colorStats = data.totalColors.find(item => item.color === selectedColor);
+    const colorStats = data.totalColors.find(item => item.colorName === selectedColor);
     if (colorStats) {
       const sectorData = data.sectorColors
-        .filter(item => item.color === selectedColor)
+        .filter(item => item.colorName === selectedColor)
         .sort((a, b) => parseFloat(b.logosUsingColor) - parseFloat(a.logosUsingColor))
         .slice(0, 5);
       setResults({
@@ -138,14 +140,14 @@ const LogoColorTool: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">Select a color to see how many logos it appears in.</p>
             <SearchableSelect
               options={data.totalColors.map((color) => ({
-                value: color.color,
+                value: color.colorName,
                 label: (
                   <div className="flex items-center">
                     <div
                       className="w-5 h-5 rounded-sm mr-2 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)]"
                       style={{ backgroundColor: color.color }}
                     />
-                    {color.color}
+                    {color.colorName}
                   </div>
                 ),
               }))}
@@ -183,8 +185,8 @@ const LogoColorTool: React.FC = () => {
               <>
                 <div className="flex items-center mb-4 p-3 pb-0">
                   <span 
-                    className="inline-block w-5 h-5 rounded mr-2" 
-                    style={{backgroundColor: results.color}}
+                    className="inline-block w-5 h-5 rounded mr-2 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)]" 
+                    style={{backgroundColor: results.color.replace(' ', '').toLowerCase()}}
                   ></span>
                   <h2 className="text-xl">
                     <span className="font-semibold">{results.color}</span> is used in <span className="font-semibold">{results.logosUsingColor}</span> of all logos.
@@ -220,10 +222,10 @@ const LogoColorTool: React.FC = () => {
                     <div key={item.color} className={`flex justify-between items-center rounded-lg ${index === 0 ? 'bg-[#126DFE] text-white py-1.5 px-3 font-bold text-xl' : 'text-gray-700 py-0 px-3'}`}>
                       <span className="flex items-center">
                         <span 
-                          className={`inline-block w-4 h-4 rounded-full mr-2 capitalize`}
+                          className={`inline-block w-5 h-5 rounded mr-2 capitalize`}
                           style={{backgroundColor: item.color}}
                         ></span>
-                        {item.color}
+                        {item.colorName}
                       </span>
                       <span className={`px-2 py-1 rounded`}>
                         {item.logosUsingColor}
